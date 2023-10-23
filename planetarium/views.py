@@ -3,6 +3,7 @@ import datetime
 from django.contrib.auth.models import AnonymousUser
 from django.db import transaction
 from django.db.models import F, Count
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import mixins
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
@@ -34,6 +35,37 @@ class ShowThemeViewSet(ModelViewSet):
     queryset = ShowTheme.objects.all()
     serializer_class = ShowThemeSerializer
 
+    @staticmethod
+    def _params_to_ints(qs):
+        """Converts a list of string IDs to a list of integers"""
+        return [int(str_id) for str_id in qs.split(",")]
+
+    def get_queryset(self):
+        """Retrieve shows with filters"""
+        name = self.request.query_params.get("name")
+        queryset = self.queryset
+
+        if name:
+            queryset = queryset.filter(name__icontains=name)
+
+        return queryset.distinct()
+
+    # Only for docs
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "name",
+                type={"type": "string"},
+                description=(
+                        "Filter by show name (case insensitive). "
+                        "Example: ?name=aBc"
+                ),
+            )
+        ]
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class AstronomyShowViewSet(ModelViewSet):
     queryset = AstronomyShow.objects.all()
@@ -58,9 +90,9 @@ class ShowSessionViewSet(ModelViewSet):
             "astronomy_show", "planetarium_dome"
         ).annotate(
             tickets_available=(
-                F("planetarium_dome__rows")
-                * F("planetarium_dome__seats_in_row")
-                - Count("tickets")
+                    F("planetarium_dome__rows")
+                    * F("planetarium_dome__seats_in_row")
+                    - Count("tickets")
             )
         )
 
