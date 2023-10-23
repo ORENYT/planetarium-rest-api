@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from planetarium.models import (
@@ -52,10 +53,10 @@ class PlanetariumDomeShortSerializer(serializers.ModelSerializer):
         fields = ("name", "capacity")
 
 
-class ShowSessionSerializer(serializers.ModelSerializer):
-    astronomy_show = AstronomyShowShortSerializer(many=False, read_only=False)
+class ShowSessionListSerializer(serializers.ModelSerializer):
+    astronomy_show = AstronomyShowShortSerializer(many=False, read_only=True)
     planetarium_dome = PlanetariumDomeShortSerializer(
-        many=False, read_only=False
+        many=False, read_only=True
     )
 
     class Meta:
@@ -63,13 +64,57 @@ class ShowSessionSerializer(serializers.ModelSerializer):
         fields = ("id", "astronomy_show", "planetarium_dome", "show_time")
 
 
+class ShowSessionEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShowSession
+        fields = ("id", "astronomy_show", "planetarium_dome", "show_time")
+
+
+class ShowSessionDetailSerializer(serializers.ModelSerializer):
+    astronomy_show = AstronomyShowSerializer(many=False, read_only=True)
+    planetarium_dome = PlanetariumDomeSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = ShowSession
+        fields = "__all__"
+
+
 class ReservationSerializer(serializers.ModelSerializer):
+    user = serializers.EmailField(read_only=True)
+    created_at = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S", read_only=True
+    )
+
     class Meta:
         model = Reservation
         fields = "__all__"
 
 
-class TicketSerializer(serializers.ModelSerializer):
+class ReservationCreateSerializer(serializers.ModelSerializer):
+    user = serializers.EmailField(read_only=False)
+    created_at = serializers.DateTimeField(
+        format="%Y-%m-%d %H:%M:%S", read_only=True
+    )
+
+    class Meta:
+        model = Reservation
+        fields = "__all__"
+
+
+class TicketEditSerializer(serializers.ModelSerializer):
+    reservation = ReservationSerializer(read_only=True)
+
     class Meta:
         model = Ticket
-        fields = "__all__"
+        fields = ("row", "seat", "show_session", "reservation")
+        read_only_fields = ("reservation",)
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    show_session = serializers.StringRelatedField()
+    reservation = ReservationSerializer(read_only=True)
+
+    class Meta:
+        model = Ticket
+        fields = ("id", "row", "seat", "show_session", "reservation")
+        read_only_fields = ("reservation",)
