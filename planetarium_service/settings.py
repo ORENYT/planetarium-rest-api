@@ -19,7 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-#=@gygdf@0&^9qu_8(&qoeq)=d)^-&fuv%yt-67ikzl^j590lt"
+SECRET_KEY = (
+    "django-insecure-#=@gygdf@0&^9qu_8(&qoeq)=d)^-&fuv%yt-67ikzl^j590lt"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -139,6 +141,9 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "planetarium.permissions.IsAdminOrIfAuthenticatedReadOnly",
+    ],
 }
 SPECTACULAR_SETTINGS = {
     "TITLE": "Planetarium API",

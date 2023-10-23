@@ -58,10 +58,17 @@ class ShowSessionListSerializer(serializers.ModelSerializer):
     planetarium_dome = PlanetariumDomeShortSerializer(
         many=False, read_only=True
     )
+    tickets_available = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = ShowSession
-        fields = ("id", "astronomy_show", "planetarium_dome", "show_time")
+        fields = (
+            "id",
+            "astronomy_show",
+            "planetarium_dome",
+            "show_time",
+            "tickets_available",
+        )
 
 
 class ShowSessionEditSerializer(serializers.ModelSerializer):
@@ -81,17 +88,6 @@ class ShowSessionDetailSerializer(serializers.ModelSerializer):
 
 class ReservationSerializer(serializers.ModelSerializer):
     user = serializers.EmailField(read_only=True)
-    created_at = serializers.DateTimeField(
-        format="%Y-%m-%d %H:%M:%S", read_only=True
-    )
-
-    class Meta:
-        model = Reservation
-        fields = "__all__"
-
-
-class ReservationCreateSerializer(serializers.ModelSerializer):
-    user = serializers.EmailField(read_only=False)
     created_at = serializers.DateTimeField(
         format="%Y-%m-%d %H:%M:%S", read_only=True
     )
