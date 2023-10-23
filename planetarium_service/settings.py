@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "planetarium",
     "user",
     "rest_framework_simplejwt",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -129,7 +130,7 @@ INTERNAL_IPS = [
 AUTH_USER_MODEL = "user.User"
 
 REST_FRAMEWORK = {
-    # "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_THROTTLE_CLASSES": [
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
@@ -139,18 +140,18 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
-# SPECTACULAR_SETTINGS = {
-#     "TITLE": "Planetarium API",
-#     "DESCRIPTION": "Project with API to use Planetarium in your webApp",
-#     "VERSION": "1.0.0",
-#     "SERVE_INCLUDE_SCHEMA": False,
-#     "SWAGGER_UI_SETTINGS": {
-#         "deepLinking": True,
-#         "defaultModelRendering": "model",
-#         "defaultModelsExpandDepth": 2,
-#         "defaultModelExpandDepth": 2,
-#     },
-# }
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Planetarium API",
+    "DESCRIPTION": "Project with API to use Planetarium in your webApp",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "defaultModelRendering": "model",
+        "defaultModelsExpandDepth": 2,
+        "defaultModelExpandDepth": 2,
+    },
+}
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
