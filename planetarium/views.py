@@ -57,8 +57,8 @@ class ShowThemeViewSet(ModelViewSet):
                 "name",
                 type={"type": "string"},
                 description=(
-                        "Filter by show name (case insensitive). "
-                        "Example: ?name=aBc"
+                    "Filter by show name (case insensitive). "
+                    "Example: ?name=aBc"
                 ),
             )
         ]
@@ -90,9 +90,9 @@ class ShowSessionViewSet(ModelViewSet):
             "astronomy_show", "planetarium_dome"
         ).annotate(
             tickets_available=(
-                    F("planetarium_dome__rows")
-                    * F("planetarium_dome__seats_in_row")
-                    - Count("tickets")
+                F("planetarium_dome__rows")
+                * F("planetarium_dome__seats_in_row")
+                - Count("tickets")
             )
         )
 
