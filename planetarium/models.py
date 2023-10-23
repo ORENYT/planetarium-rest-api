@@ -6,10 +6,17 @@ from user.models import User
 class ShowTheme(models.Model):
     name = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class AstronomyShow(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
+    themes = models.ManyToManyField(ShowTheme, related_name="shows")
+
+    def __str__(self):
+        return self.title
 
 
 class PlanetariumDome(models.Model):
@@ -20,6 +27,9 @@ class PlanetariumDome(models.Model):
     @property
     def capacity(self):
         return self.rows * self.seats_in_row
+
+    def __str__(self):
+        return self.name
 
 
 class ShowSession(models.Model):
@@ -36,6 +46,12 @@ class ShowSession(models.Model):
         null=True,
     )
     show_time = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return (
+            f"{self.astronomy_show} in {self.planetarium_dome}"
+            f" at {self.show_time}"
+        )
 
 
 class Reservation(models.Model):
